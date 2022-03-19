@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float[] mAccelerometerData = new float[3];
     private float[] mMagnetometerData = new float[3];
 
+    private ImageView spotTop;
+    private ImageView spotBottom;
+    private ImageView spotLeft;
+    private ImageView spotRight;
 
     // Very small values for the accelerometer (on all three axes) should
     // be interpreted as 0. This value is the amount of acceptable
@@ -51,6 +55,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mTextSensorAzimuth = (TextView) findViewById(R.id.value_azimuth);
         mTextSensorPitch = (TextView) findViewById(R.id.value_pitch);
         mTextSensorRoll = (TextView) findViewById(R.id.value_roll);
+
+        spotTop = findViewById(R.id.spot_top);
+        spotBottom = findViewById(R.id.spot_bottom);
+        spotLeft = findViewById(R.id.spot_left);
+        spotRight = findViewById(R.id.spot_right);
 
         // Get accelerometer and magnetometer sensors from the sensor manager.
         // The getDefaultSensor() method returns null if the sensor
@@ -121,6 +130,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float azimuth = orientationValues[0];
         float pitch = orientationValues[1];
         float roll = orientationValues[2];
+
+        spotRight.setAlpha(0f);
+        spotTop.setAlpha(0f);
+        spotLeft.setAlpha(0f);
+        spotBottom.setAlpha(0f);
+
+        if (Math.abs(pitch) < VALUE_DRIFT){
+            pitch = 0;
+        }
+        if (Math.abs(roll) < VALUE_DRIFT){
+            roll = 0;
+
+        }
+
+        if (pitch > 0) {
+            spotBottom.setAlpha(pitch);
+        }
+        else {
+            spotTop.setAlpha(Math.abs(pitch));
+        }
+        if (roll>0){
+            spotLeft.setAlpha(roll);
+        }
+        else {
+            spotRight.setAlpha(Math.abs(roll));
+        }
 
         mTextSensorAzimuth.setText(getResources().getString(R.string.value_format, azimuth));
         mTextSensorPitch.setText(getResources().getString(R.string.value_format, pitch));
